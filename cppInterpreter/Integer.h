@@ -10,6 +10,8 @@ public:
 	Integer(int val);
 	virtual bool isPrintable() const;
 	virtual std::string toString() const;
+	virtual Type* operator=(const Type& other);
+	virtual void* getValue();
 
 private:
 	int _val;

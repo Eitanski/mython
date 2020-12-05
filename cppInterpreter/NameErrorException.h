@@ -13,6 +13,7 @@ public:
 
 private:
 	std::string _name;
+	mutable std::string _buffer;
 };
 
 #endif // NAME_ERROR_EXCEPTION_H

@@ -25,16 +25,21 @@ Type* Parser::parseString(std::string str) throw()
 
 	if (makeAssignment(str)) return new Void();
 
-	Type* type = getType(str);
+	Type* type = getVariableValue(str);
 
 	if (type == nullptr)
 	{
-		throw SyntaxException();
+		type = getType(str);
+
+		if (type == nullptr)
+		{
+			throw SyntaxException();
+		}
 	}
-	
+
 	if(type->isPrintable())
 	{
-		std::cout << str << std::endl;
+		std::cout << type->toString() << std::endl;
 	}
 
 	return type;
@@ -44,7 +49,7 @@ Type* Parser::getType(std::string& str)
 {
 	if (Helper::isString(str))
 	{
-		return new String(str);
+		return new String(str.substr(1, str.length() - 2));
 	}
 	if (Helper::isInteger(str))
 	{
@@ -59,7 +64,7 @@ Type* Parser::getType(std::string& str)
 
 bool Parser::isLegalVarName(const std::string& str)
 {
-	if (Helper::isDigit(str[0])) return false;
+	if (Helper::isDigit(str[0]) || str == "False" || str == "True") return false;
 	
 	for (std::string::const_iterator i = str.begin(); i != str.end(); i++)
 	{
@@ -71,11 +76,7 @@ bool Parser::isLegalVarName(const std::string& str)
 
 bool Parser::makeAssignment(const std::string& str)
 {
-	if (std::count(str.begin(), str.end(), '=') != 1)
-	{
-		throw SyntaxException();
-		return false;
-	}
+	if (!(std::count(str.begin(), str.end(), '=') == 1 && !Helper::isString(str))) return false;
 
 	std::string left = str.substr(0, str.find('='));
 	std::string right = str.substr(str.find('=') + 1);
@@ -89,24 +90,38 @@ bool Parser::makeAssignment(const std::string& str)
 		return false;
 	}
 
-	if (!(Helper::isBoolean(right) || Helper::isInteger(right) || Helper::isString(right)))
+	Type* assign;
+
+	assign = getVariableValue(right);
+
+	if (assign == nullptr)
 	{
-		throw SyntaxException();
-		return false;
+		if (Helper::isBoolean(right) || Helper::isInteger(right) || Helper::isString(right))
+			assign = getType(right);
+		else
+			throw SyntaxException();
 	}
-	
-	std::string val = str;
-	_variables[str] = getType(val);
+	else
+		delete _variables[left];
+
+	_variables[left] = assign;
 
 	return true;
 }
 
 Type* Parser::getVariableValue(const std::string& str)
 {
+	if (!isLegalVarName(str)) return nullptr;
+
 	if (_variables.find(str) == _variables.end())
 	{
 		throw NameErrorException(str);
 	}
 
 	return _variables[str];
+}
+
+void Parser::dispatch()
+{
+	_variables.clear();
 }

@@ -6,7 +6,8 @@ NameErrorException::NameErrorException(const std::string& name) : _name(name)
 
 }
 
-const char* NameErrorException::what() const
+const char* NameErrorException::what() const throw()
 {
-	return std::string("NameError : name '" + _name + "' is not defined").c_str();
+	_buffer = "NameError : name '" + _name + "' is not defined";
+	return _buffer.c_str();
 }

@@ -14,3 +14,13 @@ bool Integer::isPrintable() const
 {
 	return true;
 }
+
+Type* Integer::operator=(const Type& other)
+{
+	return new Integer(std::stoi(other.toString()));
+}
+
+void* Integer::getValue()
+{
+	return &_val;
+}
