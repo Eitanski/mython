@@ -20,7 +20,3 @@ Type* Boolean::operator=(const Type& other)
 	return new Boolean(other.toString() == "True");
 }
 
-void* Boolean::getValue()
-{
-	return &_val;
-}

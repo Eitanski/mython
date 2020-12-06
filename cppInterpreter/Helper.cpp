@@ -36,6 +36,32 @@ bool Helper::isString(const std::string& s)
 	return false;
 }
 
+
+bool Helper::isList(const std::string& s)
+{
+	if (s.front() != '[' || s.back() != ']') return false;
+
+	if (s.length() == 2) return true;
+
+	std::string tmp = s.substr(1, s.length() - 2);
+	std::string sub;
+	int pos = 0, len = 0;
+
+	while(pos < tmp.length()) 
+	{
+		len = tmp.find(',', pos);
+		if (len == -1) len = tmp.length();
+		len -= pos;
+		sub = tmp.substr(pos, len);
+		Helper::trim(sub);
+		if (!(Helper::isString(sub) || Helper::isInteger(sub) || Helper::isBoolean(sub))) return false;
+		pos += len + 1;
+	}
+
+	return true;
+}
+
+
 bool Helper::isDigit(char c)
 {
 	return (c >= '0' && c <= '9');

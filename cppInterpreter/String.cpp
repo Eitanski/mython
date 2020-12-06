@@ -21,7 +21,3 @@ Type* String::operator=(const Type& other)
 	return new String(other.toString());
 }
 
-void* String::getValue()
-{
-	return &_val;
-}

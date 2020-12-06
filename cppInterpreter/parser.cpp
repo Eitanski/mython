@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include "Void.h"
 #include "NameErrorException.h"
+#include "List.h"
 
 std::unordered_map<std::string, Type*> Parser::_variables;
 
@@ -59,6 +60,10 @@ Type* Parser::getType(std::string& str)
 	{
 		return new Boolean(str == "True");
 	}
+	if (Helper::isList(str))
+	{
+		return new List(List::getList(str));
+	}
 	return nullptr;
 }
 
@@ -96,9 +101,7 @@ bool Parser::makeAssignment(const std::string& str)
 
 	if (assign == nullptr)
 	{
-		if (Helper::isBoolean(right) || Helper::isInteger(right) || Helper::isString(right))
-			assign = getType(right);
-		else
+		if ((assign = getType(right)) == nullptr)
 			throw SyntaxException();
 	}
 	else

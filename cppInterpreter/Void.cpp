@@ -16,8 +16,3 @@ Type* Void::operator=(const Type& other)
 {
 	return new Void();
 }
-
-void* Void::getValue()
-{
-	return nullptr;
-}

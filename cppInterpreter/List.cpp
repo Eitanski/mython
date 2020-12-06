@@ -1,8 +1,10 @@
 #include "List.h"
+#include "Helper.h"
+#include "Parser.h"
 
-List::List(std::vector<Type*>& vals)
+List::List(std::vector<Type*> vals)
 {
-	_vals.assign(vals.begin(), vals.end());
+	_vals = vals;
 }
 
 bool List::isPrintable() const
@@ -10,10 +12,9 @@ bool List::isPrintable() const
 	return true;
 }
 
-void* List::getValue() const 
+std::vector<Type*>& List::getVals()
 {
-	std::vector<Type*>* ret = &_vals;
-	return &_vals;
+	return _vals;
 }
 
 std::string List::toString() const
@@ -28,6 +29,27 @@ std::string List::toString() const
 
 Type* List::operator=(const Type& other)
 {
-	std::vector<Type*>& myName = *reinterpret_cast<std::vector<Type*>*>(other.getValue());
-	return new List();
+	return (Type*)&other;
+}
+
+std::vector<Type*> List::getList(std::string s)
+{
+	std::string tmp = s.substr(1, s.length() - 2);
+	std::string sub;
+	int pos = 0, len = 0;
+
+	std::vector<Type*> vec;
+
+	while (pos < tmp.length())
+	{
+		len = tmp.find(',', pos);
+		if (len == -1) len = tmp.length();
+		len -= pos;
+		sub = tmp.substr(pos, len);
+		vec.push_back(Parser::getType(sub));
+		Helper::trim(sub);
+		pos += len + 1;
+	}
+
+	return vec;
 }

@@ -11,7 +11,6 @@ public:
 	virtual Type* operator=(const Type& other) = 0;
 	void setIsTemp(bool isTemp);
 	bool getIsTemp();
-	virtual void* getValue() const = 0;
 
 private:
 	bool _isTemp = false;
